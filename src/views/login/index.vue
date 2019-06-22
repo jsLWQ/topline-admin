@@ -55,7 +55,22 @@ export default {
           captchaObj.appendTo('#ma')
           this.captchaObj = captchaObj
           captchaObj.onSuccess(() => {
-            console.log('验证成功')
+            const {
+              geetest_challenge: challenge,
+              geetest_seccode: seccode,
+              geetest_validate: validate
+            } = captchaObj.getValidate()
+            axios({
+              method: 'get',
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.formData.mobile}`,
+              params: {
+                challenge,
+                seccode,
+                validate
+              }
+            }).then(res => {
+              console.log(res)
+            })
           })
         })
       })
