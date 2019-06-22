@@ -1,16 +1,16 @@
 <template>
     <div class="form">
-        <div class="dan">
+        <div id="dan">
             <el-form ref="form" :model="formData">
             <el-form-item>
                 <el-input v-model="formData.mobile" placeholder="手机号码"></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item id="ma">
                 <el-col :span="10">
                     <el-input v-model="formData.code" placeholder="验证码"></el-input>
                 </el-col>
                 <el-col :span="10"  :offset="2">
-                    <el-button>获取验证码</el-button>
+                    <el-button @click="yzm">获取验证码</el-button>
                 </el-col>
             </el-form-item>
             <el-form-item>
@@ -21,6 +21,8 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
+import '@/vendor/gt.js'
 export default {
   name: 'AppLogin',
   data () {
@@ -28,13 +30,35 @@ export default {
       formData: {
         mobile: '17686506616',
         code: ''
-      }
+      },
+      captchaObj: false
     }
   },
 
   methods: {
     onSubmit () {
       console.log('msg')
+    },
+    yzm () {
+      axios({
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.formData.mobile}`,
+        method: 'get'
+      }).then(res => {
+        // console.log(res)
+        window.initGeetest({
+          gt: res.data.data.gt,
+          challenge: res.data.data.challenge,
+          offline: !res.data.data.success,
+          new_captcha: res.data.data.new_captcha,
+          product: 'prpup'
+        }, (captchaObj) => {
+          captchaObj.appendTo('#ma')
+          this.captchaObj = captchaObj
+          captchaObj.onSuccess(() => {
+            console.log('验证成功')
+          })
+        })
+      })
     }
   }
 }
@@ -45,7 +69,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    .dan {
+    #dan {
         padding: 70px;
         background: #fff url('./logo_index.png')no-repeat top 15px center;
         background-size: 200px;
