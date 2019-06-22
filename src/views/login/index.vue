@@ -14,7 +14,7 @@
                 </el-col>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" class="btn-login" @click="onSubmit">登录</el-button>
+                <el-button type="primary" class="btn-login" @click="handleLogin">登录</el-button>
             </el-form-item>
         </el-form>
         </div>
@@ -31,20 +31,19 @@ export default {
         mobile: '17686506616',
         code: ''
       },
-      captchaObj: false
+      captchaObj: null
     }
   },
 
   methods: {
-    onSubmit () {
-      console.log('msg')
-    },
     yzm () {
+      if (this.captchaObj) {
+        return this.captchaObj.verify()
+      }
       axios({
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.formData.mobile}`,
         method: 'get'
       }).then(res => {
-        // console.log(res)
         window.initGeetest({
           gt: res.data.data.gt,
           challenge: res.data.data.challenge,
@@ -53,8 +52,12 @@ export default {
           product: 'prpup'
         }, (captchaObj) => {
           captchaObj.appendTo('#ma')
+          console.log(captchaObj)
           this.captchaObj = captchaObj
-          captchaObj.onSuccess(() => {
+          captchaObj.onReady(() => {
+            captchaObj.verify()
+          }).onSuccess(() => {
+            console.log(1)
             const {
               geetest_challenge: challenge,
               geetest_seccode: seccode,
