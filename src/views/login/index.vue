@@ -1,20 +1,20 @@
 <template>
     <div class="form">
         <div id="dan">
-            <el-form ref="form" :model="formData">
-            <el-form-item>
+            <el-form :model="formData" :rules="rules" ref='ruleForm'>
+            <el-form-item prop="mobile">
                 <el-input v-model="formData.mobile" placeholder="手机号码"></el-input>
             </el-form-item>
-            <el-form-item id="ma">
+            <el-form-item id="ma" prop="code">
                 <el-col :span="10">
                     <el-input v-model="formData.code" placeholder="验证码"></el-input>
                 </el-col>
                 <el-col :span="10"  :offset="2">
-                    <el-button @click="yzm">获取验证码</el-button>
+                    <el-button @click="yzm"></el-button>
                 </el-col>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" class="btn-login" @click="handleLogin">登录</el-button>
+                <el-button type="primary" :loading="loading" class="btn-login" @click="handleLogin">登录</el-button>
             </el-form-item>
         </el-form>
         </div>
@@ -31,10 +31,20 @@ export default {
         mobile: '17686506616',
         code: ''
       },
-      captchaObj: null
+      loading: false,
+      captchaObj: null,
+      rules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { len: 11, message: '长度在 11位', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '长度在 6位', trigger: 'blur' }
+        ]
+      }
     }
   },
-
   methods: {
     yzm () {
       if (this.captchaObj) {
@@ -57,7 +67,7 @@ export default {
           captchaObj.onReady(() => {
             captchaObj.verify()
           }).onSuccess(() => {
-            console.log(1)
+            // console.log(1)
             const {
               geetest_challenge: challenge,
               geetest_seccode: seccode,
@@ -77,6 +87,15 @@ export default {
       })
     },
     handleLogin () {
+      this.$refs['ruleForm'].validate(valid => {
+        if (!valid) {
+          return
+        }
+        this.ax()
+        this.loading = true
+      })
+    },
+    ax () {
       axios({
         method: 'post',
         url: `http://ttapi.research.itcast.cn/mp/v1_0/authorizations`,
@@ -84,9 +103,11 @@ export default {
       }).then(res => {
         this.$message.error('登录成功')
         this.$router.push({ name: 'home' })
+        this.loading = false
       }).catch(err => {
         this.$message.error('验证码错误')
         console.log(err)
+        this.loading = false
       })
     }
   }
