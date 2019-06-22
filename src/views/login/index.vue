@@ -71,11 +71,22 @@ export default {
                 seccode,
                 validate
               }
-            }).then(res => {
-              console.log(res)
             })
           })
         })
+      })
+    },
+    handleLogin () {
+      axios({
+        method: 'post',
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/authorizations`,
+        data: this.formData
+      }).then(res => {
+        this.$message.error('登录成功')
+        this.$router.push({ name: 'home' })
+      }).catch(err => {
+        this.$message.error('验证码错误')
+        console.log(err)
       })
     }
   }
@@ -87,6 +98,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+      background: url('./login_bg.jpg');
     #dan {
         padding: 70px;
         background: #fff url('./logo_index.png')no-repeat top 15px center;

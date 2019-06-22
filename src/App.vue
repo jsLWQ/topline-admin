@@ -17,6 +17,5 @@ export default {
 
     #app {
       height: 100%;
-      background: url('./views/login/login_bg.jpg');
     }
 </style>
