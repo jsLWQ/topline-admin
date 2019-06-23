@@ -42,6 +42,7 @@ export default {
       //  禁用登录按钮
       loading: false,
       captchaObj: null,
+      lastCellphone: '', //  用来存储上一次的手机号
       rules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -67,14 +68,23 @@ export default {
         if (errorMessage.trim().length > 0) {
           return
         }
-        this.renj()
+        //  如果没有this.captchaObj，则去初始化，有了则去判断两次手机号是否一样，一样的话，则直接
+        //  去掉用this.captchaObj.verify()，直接显示，不一样则需要去初始化，还需要上次上一次
+        //  初始化插入DOM中的元素
+        if (this.captchaObj) {
+          if (this.lastCellphone !== this.formData.mobile) {
+            document.querySelector('body').removeChild(document.querySelector('.geetest_panel'))
+            this.renj()
+          } else {
+            this.captchaObj.verify()
+          }
+        } else {
+          this.renj()
+        }
       })
     },
     //  获得人机交互的验证，然后发送短信验证码
     renj () {
-      if (this.captchaObj) {
-        return this.captchaObj.verify()
-      }
       axios({
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.formData.mobile}`,
         method: 'get'
@@ -91,6 +101,8 @@ export default {
           this.captchaObj = captchaObj
           captchaObj.onReady(() => {
             captchaObj.verify()
+            // console.log(this.formData.mobile)
+            this.lastCellphone = this.formData.mobile
           }).onSuccess(() => {
             const {
               geetest_challenge: challenge,
