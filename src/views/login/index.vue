@@ -10,7 +10,7 @@
                     <el-input v-model="formData.code" placeholder="验证码"></el-input>
                 </el-col>
                 <el-col :span="10"  :offset="2">
-                  <el-button @click="yzm" :disabled="!!id">{{id?`${num}秒后重新发送` : '获取验证码'}}</el-button>
+                  <el-button @click="yzm"  :loading="!!id||authCodeLoading">{{id?`${num}秒后重新发送` : '获取验证码'}}</el-button>
                 </el-col>
             </el-form-item>
             <el-form-item prop="checked">
@@ -43,6 +43,7 @@ export default {
       loading: false,
       captchaObj: null,
       lastCellphone: '', //  用来存储上一次的手机号
+      authCodeLoading: false, //  用来禁用发送按钮的
       rules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -85,6 +86,7 @@ export default {
     },
     //  获得人机交互的验证，然后发送短信验证码
     renj () {
+      this.authCodeLoading = true
       axios({
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.formData.mobile}`,
         method: 'get'
@@ -103,6 +105,7 @@ export default {
             captchaObj.verify()
             // console.log(this.formData.mobile)
             this.lastCellphone = this.formData.mobile
+            this.authCodeLoading = false
           }).onSuccess(() => {
             const {
               geetest_challenge: challenge,
@@ -117,8 +120,8 @@ export default {
                 seccode,
                 validate
               }
-            }).then(res => {
-              console.log(res)
+            }).then(() => {
+              // console.log(res)
               this.countDown()
             })
           })
