@@ -64,6 +64,17 @@ export default {
   methods: {
     //  发送验证码时
     yzm () {
+      //  点击获取验证码时，表单验证
+      this.$refs['ruleForm'].validateField('mobile', errorMessage => {
+        // errorMessage获取到的是表单验证里面message里的字段，如果通过验证，则errorMessage为空
+        if (errorMessage.trim().length > 0) {
+          return
+        }
+        this.renj()
+      })
+    },
+    //  获得人机交互的验证，然后发送短信验证码
+    renj () {
       if (this.captchaObj) {
         return this.captchaObj.verify()
       }
