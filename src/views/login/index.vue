@@ -98,7 +98,7 @@ export default {
           new_captcha: res.data.data.new_captcha,
           product: 'bind'
         }, (captchaObj) => {
-          captchaObj.appendTo('#ma')
+          // captchaObj.appendTo('#ma')
           console.log(captchaObj)
           this.captchaObj = captchaObj
           captchaObj.onReady(() => {
@@ -178,12 +178,12 @@ export default {
     align-items: center;
       background: url('./login_bg.jpg');
     #dan {
-        padding: 70px;
-        background: #fff url('./logo_index.png')no-repeat top 15px center;
-        background-size: 200px;
-        .btn-login {
-            width: 100%;
-        }
+      padding: 70px;
+      background: #fff url('./logo_index.png')no-repeat top 15px center;
+      background-size: 200px;
+      .btn-login {
+          width: 100%;
+      }
     }
   }
 </style>
