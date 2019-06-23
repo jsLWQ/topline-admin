@@ -10,7 +10,7 @@
                     <el-input v-model="formData.code" placeholder="验证码"></el-input>
                 </el-col>
                 <el-col :span="10"  :offset="2">
-                    <el-button @click="yzm" :disabled="dis">{{ma}}</el-button>
+                  <el-button @click="yzm" :disabled="!!id">{{id?`${num}秒后重新发送` : '获取验证码'}}</el-button>
                 </el-col>
             </el-form-item>
             <el-form-item prop="checked">
@@ -37,14 +37,11 @@ export default {
         code: '',
         checked: ''
       },
-      ma: '获取验证码',
-      num: 5,
-      id: '',
+      num: 5, //  倒计时时间
+      id: '', //  倒计时的id值
       //  禁用登录按钮
       loading: false,
       captchaObj: null,
-      //  禁用发送按钮
-      dis: false,
       rules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -108,10 +105,24 @@ export default {
                 seccode,
                 validate
               }
+            }).then(res => {
+              console.log(res)
+              this.countDown()
             })
           })
         })
       })
+    },
+    //  倒计时效果
+    countDown () {
+      this.id = window.setInterval(() => {
+        this.num--
+        if (this.num < 0) {
+          window.clearInterval(this.id)
+          this.id = ''
+          this.num = 5
+        }
+      }, 1000)
     },
     //  点击登录时
     handleLogin () {
