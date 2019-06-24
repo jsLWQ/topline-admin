@@ -26,7 +26,6 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
 import '@/vendor/gt.js'
 export default {
   name: 'AppLogin',
@@ -87,7 +86,7 @@ export default {
     //  获得人机交互的验证，然后发送短信验证码
     renj () {
       this.authCodeLoading = true
-      axios({
+      this.$axios({
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.formData.mobile}`,
         method: 'get'
       }).then(res => {
@@ -112,7 +111,7 @@ export default {
               geetest_seccode: seccode,
               geetest_validate: validate
             } = captchaObj.getValidate()
-            axios({
+            this.$axios({
               method: 'get',
               url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.formData.mobile}`,
               params: {
@@ -150,7 +149,7 @@ export default {
       })
     },
     ax () {
-      axios({
+      this.$axios({
         method: 'post',
         url: `http://ttapi.research.itcast.cn/mp/v1_0/authorizations`,
         data: this.formData
