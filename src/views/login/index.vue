@@ -154,13 +154,13 @@ export default {
         url: `http://ttapi.research.itcast.cn/mp/v1_0/authorizations`,
         data: this.formData
       }).then(res => {
+        window.localStorage.setItem('user-info', JSON.stringify(res.data.data))
         this.$message({
           message: '恭喜你，这是一条成功消息',
           type: 'success'
         })
         // console.log(res)
         this.$router.push({ name: 'home' })
-        window.localStorage.setItem('user-info', JSON.stringify(res.data.data))
         this.loading = false
       }).catch(err => {
         this.$message.error('验证码错误')
