@@ -159,7 +159,9 @@ export default {
           message: '恭喜你，这是一条成功消息',
           type: 'success'
         })
-        this.$router.push({ name: 'home' })
+        console.log(res)
+        this.$router.push({ name: 'layout' })
+        window.localStorage.setItem('user-info', JSON.stringify(res.data.data))
         this.loading = false
       }).catch(err => {
         this.$message.error('验证码错误')
