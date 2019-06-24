@@ -99,7 +99,7 @@ export default {
           product: 'bind'
         }, (captchaObj) => {
           // captchaObj.appendTo('#ma')
-          console.log(captchaObj)
+          // console.log(captchaObj)
           this.captchaObj = captchaObj
           captchaObj.onReady(() => {
             captchaObj.verify()
@@ -159,8 +159,8 @@ export default {
           message: '恭喜你，这是一条成功消息',
           type: 'success'
         })
-        console.log(res)
-        this.$router.push({ name: 'layout' })
+        // console.log(res)
+        this.$router.push({ name: 'home' })
         window.localStorage.setItem('user-info', JSON.stringify(res.data.data))
         this.loading = false
       }).catch(err => {
