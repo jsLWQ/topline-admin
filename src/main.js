@@ -10,6 +10,23 @@ Vue.prototype.$axios = axios
 
 Vue.use(ElementUI)
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+axios.interceptors.request.use(config => {
+  const token = JSON.parse(window.localStorage.getItem('user-info')).token
+  // console.log(token)
+  // console.log(config)//本次请求的相关配置
+  if (config.url !== '/login') {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+}, error => {
+  return Promise.reject(error)
+})
+axios.interceptors.response.use(response => {
+  // console.log(response)
+  return response.data.data
+}, error => {
+  return Promise.reject(error)
+})
 Vue.config.productionTip = false
 
 new Vue({
