@@ -12,7 +12,7 @@ export default new Router({
     // },
     {
       name: 'layout',
-      path: '/layout',
+      path: '/',
       component: () => import('@/views/layout'),
       children: [
         {

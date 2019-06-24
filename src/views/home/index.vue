@@ -8,6 +8,5 @@ export default {
   name: 'AppHome'
 }
 </script>
-<style scoped>
-
+<style lang="less" scoped>
 </style>
