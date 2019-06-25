@@ -6,10 +6,21 @@ import router from './router'
 import './styles/index.less'
 import 'nprogress/nprogress.css'
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 Vue.prototype.$axios = axios
 
 Vue.use(ElementUI)
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+axios.defaults.transformResponse = [function (data) {
+  // return JSONbig.parse(data)
+  try {
+    // data 数据可能不是标准的 JSON 格式字符串，否则会导致 JSONbig.parse(data) 转换失败报错
+    return JSONbig.parse(data)
+  } catch (err) {
+    // 无法转换的数据直接原样返回
+    return data
+  }
+}]
 //  注释自己写的
 // if(location.hash.split('#')[1].toString()!=='/login') {
 axios.interceptors.request.use(config => {
@@ -32,11 +43,15 @@ axios.interceptors.request.use(config => {
 // if(location.hash.split('#')[1].toString()!=='/login') {
 axios.interceptors.response.use(response => {
 // console.log(response)
-  return response.data.data
+  if (typeof response.data === 'object') {
+    return response.data.data
+  } else {
+    return response.data
+  }
 }, error => {
-// console.dir(error)
-// console.log(error.response.status)
-// console.log(response.url)
+  console.dir(error)
+  // console.log(error.response.status)
+  // console.log(response.url)
   if (error.response.status === 401) {
     window.localStorage.removeItem('user-info')
     router.push('/login')

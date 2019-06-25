@@ -76,8 +76,10 @@
         <el-table-column
           label="操作"
           width="180">
-          <el-button type="success" plain>编辑</el-button>
-          <el-button type="warning" plain>删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="success" plain>编辑</el-button>
+            <el-button type="warning" plain @click="del(scope.row)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
         <el-pagination
@@ -117,6 +119,7 @@ export default {
     },
     //  获取文章列表
     getList () {
+      // console.log(1)
       this.$axios({
         method: 'GET',
         url: '/articles',
@@ -136,6 +139,17 @@ export default {
       // console.log(num)
       this.PageNumber = num
       this.getList(num)
+    },
+    //  删除文章
+    del (id) {
+      // console.log(id.id)
+      this.$axios({
+        method: 'DELETE',
+        url: `/articles/${id.id}`
+      }).then(res => {
+        console.log(res)
+        this.getList()
+      })
     }
   }
 }
