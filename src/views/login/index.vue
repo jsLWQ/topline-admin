@@ -89,12 +89,13 @@ export default {
       this.$axios({
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.formData.mobile}`,
         method: 'get'
-      }).then(res => {
+      }).then(data => {
+        console.log(1)
         window.initGeetest({
-          gt: res.data.data.gt,
-          challenge: res.data.data.challenge,
-          offline: !res.data.data.success,
-          new_captcha: res.data.data.new_captcha,
+          gt: data.gt,
+          challenge: data.challenge,
+          offline: !data.success,
+          new_captcha: data.new_captcha,
           product: 'bind'
         }, (captchaObj) => {
           // captchaObj.appendTo('#ma')
@@ -153,8 +154,8 @@ export default {
         method: 'post',
         url: `http://ttapi.research.itcast.cn/mp/v1_0/authorizations`,
         data: this.formData
-      }).then(res => {
-        window.localStorage.setItem('user-info', JSON.stringify(res.data.data))
+      }).then(data => {
+        window.localStorage.setItem('user-info', JSON.stringify(data))
         this.$message({
           message: '恭喜你，这是一条成功消息',
           type: 'success'
