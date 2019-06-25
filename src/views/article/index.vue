@@ -44,7 +44,12 @@
       <el-table
         :data="ListData"
         stripe
-        style="width: 100%">
+        style="width: 100%"
+        v-loading="disabled"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
         <el-table-column
           class="article-img"
           prop="cover.images[0]"
@@ -81,6 +86,7 @@
           layout="prev, pager, next"
           :total="length"
           @current-change="Page"
+          :disabled="disabled"
         >
         </el-pagination>
     </el-card>
@@ -98,7 +104,8 @@ export default {
       },
       ListData: [],
       length: 0, //  内容列表的总长度
-      PageNumber: 1//  当前页码
+      PageNumber: 1, //  当前页码
+      disabled: false//  table和页码按钮禁用
     }
   },
   created () {
@@ -117,13 +124,15 @@ export default {
           page: this.PageNumber
         }
       }).then(data => {
-        console.log(data)
+        // console.log(data)
         this.length = data.total_count
         this.ListData = data.results
+        this.disabled = false
       })
     },
     //  获取当前页码
     Page (num) {
+      this.disabled = true
       // console.log(num)
       this.PageNumber = num
       this.getList(num)
