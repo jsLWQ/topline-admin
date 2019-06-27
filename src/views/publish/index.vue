@@ -18,12 +18,14 @@
         </el-form-item>
         <el-form-item label="封面">
         </el-form-item>
-        <el-form-item label="文章频道">
+        <!-- <articleChannel :value="form.channel_id" @input="takeIn"></articleChannel> -->
+        <articleChannel v-model="form.channel_id"></articleChannel>
+        <!-- <el-form-item label="文章频道">
           <el-select v-model="form.channel_id" placeholder="请选择文章频道">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
         <hr>
       <div class="operation">
@@ -34,14 +36,18 @@
   </div>
 </template>
 <script>
+import articleChannel from '@/components/article-channel'
 export default {
   name: 'Apppublish',
+  components: {
+    articleChannel
+  },
   data () {
     return {
       form: {
         title: '', // 文章状态
         content: '', //  文章内容
-        channel_id: 3, // 文章频道
+        channel_id: '', // 文章频道
         cover: { //  封面
           type: 0,
           images: []
@@ -65,6 +71,7 @@ export default {
           message: '恭喜你，发布成功',
           type: 'success'
         })
+        this.$router.push({ name: 'article' })
       }).catch(err => {
         console.log(err)
         this.$message({
@@ -72,6 +79,10 @@ export default {
           type: 'success'
         })
       })
+    },
+    //  接受子组件传的值
+    takeIn (id) {
+      this.form.channel_id = id
     }
   }
 }

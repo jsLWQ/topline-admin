@@ -12,12 +12,13 @@
           <el-radio v-for="(item,index) in StatusNumber" :key="item.name"  :label="index">{{item.name}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="活动区域">
-        <el-select v-model="form.channel_id" placeholder="请选择活动区域">
+      <!-- <el-form-item label="活动区域"> -->
+        <articleChannel v-model="form.channel_id"></articleChannel>
+        <!-- <el-select v-model="form.channel_id" placeholder="请选择活动区域">
           <el-option value="">所有频道</el-option>
           <el-option v-for="item in essay_id" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
+        </el-select> -->
+      <!-- </el-form-item> -->
       <el-form-item label="时间选择">
         <el-date-picker
           v-model="form.value1"
@@ -98,8 +99,13 @@
   </div>
 </template>
 <script>
+//  加载下拉菜单组件
+import articleChannel from '@/components/article-channel'
 export default {
   name: 'Apparticle',
+  components: {
+    articleChannel
+  },
   data () {
     return {
       form: {
@@ -139,7 +145,6 @@ export default {
     }
   },
   created () {
-    this.getList()//  获取文章列表
     this.essayChannel()//  获取文章频道
   },
   methods: {
@@ -147,16 +152,6 @@ export default {
       // console.log('submit!')
       this.PageNumber = 1
       this.getList()
-    },
-    //  获取文章频道
-    essayChannel () {
-      this.$axios({
-        method: 'GET',
-        url: `/channels`
-      }).then(res => {
-        // console.log(res.channels)
-        this.essay_id = res.channels
-      })
     },
     //  获取文章列表
     getList () {
