@@ -38,7 +38,7 @@
     <!-- 内容列表 -->
     <el-card class="article-card2">
       <div slot="header" class="clearfix">
-        <span>共找到{{length}}条符合条件的内容</span>
+        <span>共找到{{PageNumber}}条符合条件的内容</span>
       </div>
       <el-table
         :data="ListData"
@@ -88,10 +88,9 @@
           background
           class="article-btn"
           layout="prev, pager, next"
-          :total="length"
+          :total="PageNumber"
           @current-change="Page"
           :disabled="disabled"
-          :current-page = 'PageNumber'
         >
         </el-pagination>
     </el-card>
@@ -100,7 +99,7 @@
 </template>
 <script>
 export default {
-  name: 'article',
+  name: 'Apparticle',
   data () {
     return {
       form: {
@@ -180,7 +179,7 @@ export default {
         }
       }).then(data => {
         // console.log(data)
-        this.length = data.total_count
+        this.PageNumber = data.total_count
         this.ListData = data.results
         this.disabled = false
       })

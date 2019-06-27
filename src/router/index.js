@@ -12,19 +12,24 @@ const router = new Router({
       path: '/',
       component: () => import('@/views/layout'),
       children: [
-        {
+        { // 主页
           name: 'home',
           path: '',
           component: () => import('@/views/home')
         },
-        {
+        { // 文章列表
           name: 'article',
           path: '/article',
           component: () => import('@/views/article')
+        },
+        { // 发布文章
+          name: 'publish',
+          path: '/publish',
+          component: () => import('@/views/publish')
         }
       ]
     },
-    {
+    { // 登录
       name: 'login',
       path: '/login',
       component: () => import('@/views/login')

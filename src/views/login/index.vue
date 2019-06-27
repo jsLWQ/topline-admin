@@ -33,7 +33,7 @@ export default {
     return {
       formData: {
         mobile: '17686506616',
-        code: '',
+        code: '246810',
         checked: ''
       },
       num: 5, //  倒计时时间
@@ -162,7 +162,7 @@ export default {
       }).then(data => {
         window.localStorage.setItem('user-info', JSON.stringify(data))
         this.$message({
-          message: '恭喜你，这是一条成功消息',
+          message: '恭喜你，登录成功',
           type: 'success'
         })
         // console.log(res)
