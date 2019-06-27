@@ -87,7 +87,7 @@ export default {
     renj () {
       this.authCodeLoading = true
       this.$axios({
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.formData.mobile}`,
+        url: `/captchas/${this.formData.mobile}`,
         method: 'get'
       }).then(data => {
         console.log(1)
@@ -107,6 +107,7 @@ export default {
             this.lastCellphone = this.formData.mobile
             this.authCodeLoading = false
           }).onSuccess(() => {
+            // console.log(captchaObj.getValidate())
             const {
               geetest_challenge: challenge,
               geetest_seccode: seccode,
@@ -114,13 +115,17 @@ export default {
             } = captchaObj.getValidate()
             this.$axios({
               method: 'get',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.formData.mobile}`,
+              url: `/sms/codes/${this.formData.mobile}`,
               params: {
                 challenge,
                 seccode,
                 validate
               }
             }).then(() => {
+              this.$message({
+                message: '发送验证码成功',
+                type: 'success'
+              })
               // console.log(res)
               this.countDown()
             })
@@ -152,7 +157,7 @@ export default {
     ax () {
       this.$axios({
         method: 'post',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/authorizations`,
+        url: `/authorizations`,
         data: this.formData
       }).then(data => {
         window.localStorage.setItem('user-info', JSON.stringify(data))

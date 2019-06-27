@@ -11,6 +11,7 @@ Vue.prototype.$axios = axios
 
 Vue.use(ElementUI)
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+// axios.defaults.baseURL = 'http://toutiao.course.itcast.cn/mp/v1_0/'
 axios.defaults.transformResponse = [function (data) {
   // return JSONbig.parse(data)
   try {

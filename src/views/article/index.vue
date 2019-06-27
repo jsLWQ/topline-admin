@@ -5,33 +5,32 @@
       <div slot="header" class="clearfix">
         <span>全部图文</span>
       </div>
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="80px" class="demo-ruleForm">
       <el-form-item label="文章状态">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="全部"></el-radio>
-          <el-radio label="草稿"></el-radio>
-          <el-radio label="待审核"></el-radio>
-          <el-radio label="审核通过"></el-radio>
-          <el-radio label="审核失败"></el-radio>
+        <el-radio-group v-model="form.status">
+          <el-radio label="">全部</el-radio>
+          <el-radio v-for="(item,index) in StatusNumber" :key="item.name"  :label="index">{{item.name}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="活动区域">
-        <el-select v-model="form.region" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="form.channel_id" placeholder="请选择活动区域">
+          <el-option value="">所有频道</el-option>
+          <el-option v-for="item in essay_id" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="时间选择">
         <el-date-picker
           v-model="form.value1"
           type="daterange"
+          value-format="yyyy-MM-dd"
+          @change="change"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-button type="primary" :loading="disabled" @click="onSubmit">查询</el-button>
       </el-form-item>
       </el-form>
     </el-card>
@@ -72,6 +71,9 @@
         <el-table-column
           prop="status"
           label="状态">
+          <template slot-scope="scope">
+          <el-tag :type="StatusNumber[scope.row.status].type">{{StatusNumber[scope.row.status].name}}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -89,6 +91,7 @@
           :total="length"
           @current-change="Page"
           :disabled="disabled"
+          :current-page = 'PageNumber'
         >
         </el-pagination>
     </el-card>
@@ -97,34 +100,83 @@
 </template>
 <script>
 export default {
+  name: 'article',
   data () {
     return {
       form: {
-        region: '',
-        resource: '',
-        value1: ''
+        channel_id: '',
+        status: '',
+        value1: [],
+        begin_pubdate: '', //  开始时间
+        end_pubdate: ''//  结束时间
       },
       ListData: [],
       length: 0, //  内容列表的总长度
       PageNumber: 1, //  当前页码
-      disabled: false//  table和页码按钮禁用
+      disabled: false, // table和页码按钮禁用
+      StatusNumber: [ //  状态列表
+        {
+          type: 'info',
+          name: '草稿'
+        },
+        {
+          type: '',
+          name: '待审核'
+        },
+        {
+          type: 'success',
+          name: '审核通过'
+        },
+        {
+          type: 'warning',
+          name: '审核失败'
+        },
+        {
+          type: 'danger',
+          name: '已删除'
+        }
+      ],
+      essay_id: []//  获取文章列表
     }
   },
   created () {
-    this.getList()
+    this.getList()//  获取文章列表
+    this.essayChannel()//  获取文章频道
   },
   methods: {
     onSubmit () {
-      console.log('submit!')
+      // console.log('submit!')
+      this.PageNumber = 1
+      this.getList()
+    },
+    //  获取文章频道
+    essayChannel () {
+      this.$axios({
+        method: 'GET',
+        url: `/channels`
+      }).then(res => {
+        // console.log(res.channels)
+        this.essay_id = res.channels
+      })
     },
     //  获取文章列表
     getList () {
+      this.disabled = true
       // console.log(1)
+      let obj = {}
+      for (let key in this.form) {
+        // console.log(this.form[key])
+        if (this.form[key]) {
+          obj[key] = this.form[key]
+        }
+      }
+      // console.log(obj)
       this.$axios({
         method: 'GET',
         url: '/articles',
         params: {
-          page: this.PageNumber
+          page: this.PageNumber,
+          ...obj
         }
       }).then(data => {
         // console.log(data)
@@ -150,6 +202,12 @@ export default {
         console.log(res)
         this.getList()
       })
+    },
+    //  获取筛选里的时间
+    change (value) {
+      // console.log(value[0])
+      this.form.begin_pubdate = value[0]
+      this.form.end_pubdate = value[1]
     }
   }
 }
