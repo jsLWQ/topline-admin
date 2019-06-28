@@ -12,13 +12,13 @@
           <el-radio v-for="(item,index) in StatusNumber" :key="item.name"  :label="index">{{item.name}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <!-- <el-form-item label="活动区域"> -->
+      <el-form-item label="活动区域">
         <articleChannel v-model="form.channel_id"></articleChannel>
         <!-- <el-select v-model="form.channel_id" placeholder="请选择活动区域">
           <el-option value="">所有频道</el-option>
           <el-option v-for="item in essay_id" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select> -->
-      <!-- </el-form-item> -->
+      </el-form-item>
       <el-form-item label="时间选择">
         <el-date-picker
           v-model="form.value1"
@@ -80,7 +80,7 @@
           label="操作"
           width="180">
           <template slot-scope="scope">
-            <el-button type="success" plain>编辑</el-button>
+            <el-button type="success" plain @click="Edit(scope.row.id)">编辑</el-button>
             <el-button type="warning" plain @click="del(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -145,7 +145,7 @@ export default {
     }
   },
   created () {
-    this.essayChannel()//  获取文章频道
+    this.getList()//  获取文章列表
   },
   methods: {
     onSubmit () {
@@ -188,13 +188,14 @@ export default {
     },
     //  删除文章
     del (id) {
-      // console.log(id.id)
+      console.log(id.id)
       this.$axios({
         method: 'DELETE',
         url: `/articles/${id.id}`
       }).then(res => {
         console.log(res)
-        this.getList()
+        this.PageNumber = 1
+        this.getList(this.PageNumber)
       })
     },
     //  获取筛选里的时间
@@ -202,6 +203,10 @@ export default {
       // console.log(value[0])
       this.form.begin_pubdate = value[0]
       this.form.end_pubdate = value[1]
+    },
+    //  编辑文章
+    Edit (id) {
+      this.$router.push(`publishEdit/${id}`)
     }
   }
 }

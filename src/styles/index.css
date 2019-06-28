@@ -9,3 +9,6 @@ body {
 .el-radio__input {
   display: none;
 }
+.ql-container {
+  height: 300px !important;
+}
