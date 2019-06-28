@@ -2,10 +2,10 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>发表文章</span>
+        <span>{{Edit_id?'编辑文章':'发表文章'}}</span>
       </div>
       <el-form ref="form"
-      v-loading="false"
+      v-loading="Edit_id && Editloading"
       element-loading-text="拼命加载中"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -33,8 +33,8 @@
       </el-form>
         <hr>
       <div class="operation">
-        <el-button type="primary" @click="releaseEssay(false)">{{Edit_id?'编辑':'发布'}}</el-button>
-        <el-button type="info" @click="releaseEssay(true)">草稿</el-button>
+        <el-button type="primary" :loading="Edit_id && Editloading" @click="releaseEssay(false)">{{Edit_id?'编辑':'发布'}}</el-button>
+        <el-button type="info" :loading="Edit_id && Editloading" @click="releaseEssay(true)">草稿</el-button>
       </div>
     </el-card>
   </div>
@@ -67,7 +67,8 @@ export default {
       },
       content: '',
       editorOption: {
-      }
+      },
+      Editloading: false
     }
   },
   computed: {
@@ -77,11 +78,20 @@ export default {
     //  获取编辑文章的ID
     Edit_id () {
       return this.$route.params.id
+    },
+    Edit_name () {
+      return this.$route.name
     }
   },
   mounted () {
+    // if(!this.Edit_id) {
+    //   this.form.title = ''
+    //   // for(let key in this.form) {
+    //   //   this.form[key] = ''
+    //   // }
+    // }
     // console.log(this.Edit_name)
-    console.log(this.$route)// 可以得到当前路由的name
+    // console.log(this.$route)// 可以得到当前路由的name
     this.assignEssay()
     // console.log('this is current quill instance object', this.editor)
   },
@@ -117,12 +127,25 @@ export default {
     //  获取编辑的指定文章
     assignEssay () {
       if (this.$route.name === 'publishEdit') {
+        this.Editloading = true
         this.$axios({
           method: 'GET',
           url: `/articles/${this.Edit_id}`
         }).then(data => {
           // console.log(data)
+          this.$message({
+            message: '文章加载成功',
+            type: 'success'
+          })
+          this.Editloading = false
           this.form = data
+        }).catch(err => {
+          console.log(err)
+          this.$message({
+            message: '文章加载失败',
+            type: 'error'
+          })
+          this.Editloading = false
         })
       }
     }

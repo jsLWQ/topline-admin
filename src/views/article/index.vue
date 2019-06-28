@@ -12,13 +12,13 @@
           <el-radio v-for="(item,index) in StatusNumber" :key="item.name"  :label="index">{{item.name}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="活动区域">
+      <!-- <el-form-item label="活动区域"> -->
         <articleChannel v-model="form.channel_id"></articleChannel>
         <!-- <el-select v-model="form.channel_id" placeholder="请选择活动区域">
           <el-option value="">所有频道</el-option>
           <el-option v-for="item in essay_id" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select> -->
-      </el-form-item>
+      <!-- </el-form-item> -->
       <el-form-item label="时间选择">
         <el-date-picker
           v-model="form.value1"
@@ -39,7 +39,7 @@
     <!-- 内容列表 -->
     <el-card class="article-card2">
       <div slot="header" class="clearfix">
-        <span>共找到{{PageNumber}}条符合条件的内容</span>
+        <span>共找到{{length}}条符合条件的内容</span>
       </div>
       <el-table
         :data="ListData"
@@ -80,7 +80,7 @@
           label="操作"
           width="180">
           <template slot-scope="scope">
-            <el-button type="success" plain @click="Edit(scope.row.id)">编辑</el-button>
+            <el-button type="success" plain @click="$router.push(`publish/${scope.row.id}`)">编辑</el-button>
             <el-button type="warning" plain @click="del(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -89,7 +89,7 @@
           background
           class="article-btn"
           layout="prev, pager, next"
-          :total="PageNumber"
+          :total="length"
           @current-change="Page"
           :disabled="disabled"
         >
@@ -174,8 +174,15 @@ export default {
         }
       }).then(data => {
         // console.log(data)
-        this.PageNumber = data.total_count
+        this.length = data.total_count
         this.ListData = data.results
+        this.disabled = false
+      }).catch(err => {
+        this.$message({
+          message: '数据加载失败',
+          type: 'erroe'
+        })
+        console.log(err)
         this.disabled = false
       })
     },
@@ -203,10 +210,6 @@ export default {
       // console.log(value[0])
       this.form.begin_pubdate = value[0]
       this.form.end_pubdate = value[1]
-    },
-    //  编辑文章
-    Edit (id) {
-      this.$router.push(`publishEdit/${id}`)
     }
   }
 }

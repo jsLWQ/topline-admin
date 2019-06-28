@@ -29,7 +29,7 @@ const router = new Router({
         },
         { // 编辑文章
           name: 'publishEdit',
-          path: '/publishEdit/:id',
+          path: '/publish/:id',
           component: () => import('@/views/publish')
         }
       ]
