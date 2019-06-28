@@ -84,7 +84,19 @@ export default {
     }
   },
   created () {
-    this.assignEssay()
+    console.log(this.$route)
+    if (this.$route.name === 'publishEdit') {
+      this.assignEssay()
+    } else if (this.$route.name === 'publish') {
+      console.log(1)
+      // this.form.title = ''
+      // for(let key in this.form) {
+      //   console.log(this.form[key])
+      //   // if(this.form[key] !=='cover') {
+      //   //   this.form[key] = ''
+      //   // }
+      // }
+    }
   },
   mounted () {
     // console.log(this.Edit_name)
@@ -106,28 +118,26 @@ export default {
     },
     //  获取编辑的指定文章
     assignEssay () {
-      if (this.$route.name === 'publishEdit') {
-        this.Editloading = true
-        this.$axios({
-          method: 'GET',
-          url: `/articles/${this.Edit_id}`
-        }).then(data => {
-          // console.log(data)
-          this.$message({
-            message: '文章加载成功',
-            type: 'success'
-          })
-          this.Editloading = false
-          this.form = data
-        }).catch(err => {
-          console.log(err)
-          this.$message({
-            message: '文章加载失败',
-            type: 'error'
-          })
-          this.Editloading = false
+      this.Editloading = true
+      this.$axios({
+        method: 'GET',
+        url: `/articles/${this.Edit_id}`
+      }).then(data => {
+        // console.log(data)
+        this.$message({
+          message: '文章加载成功',
+          type: 'success'
         })
-      }
+        this.Editloading = false
+        this.form = data
+      }).catch(err => {
+        console.log(err)
+        this.$message({
+          message: '文章加载失败',
+          type: 'error'
+        })
+        this.Editloading = false
+      })
     },
     // 编辑文章
     EditEssay (draft) {

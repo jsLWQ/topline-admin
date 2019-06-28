@@ -31,6 +31,16 @@ const router = new Router({
           name: 'publishEdit',
           path: '/publish/:id',
           component: () => import('@/views/publish')
+        },
+        {
+          name: 'comment',
+          path: '/comment',
+          component: () => import('@/views/comment')
+        },
+        {
+          name: 'account',
+          path: '/account',
+          component: () => import('@/views/account')
         }
       ]
     },
