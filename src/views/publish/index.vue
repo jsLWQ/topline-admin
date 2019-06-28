@@ -83,42 +83,22 @@ export default {
       return this.$route.name
     }
   },
+  created () {
+    this.assignEssay()
+  },
   mounted () {
-    // if(!this.Edit_id) {
-    //   this.form.title = ''
-    //   // for(let key in this.form) {
-    //   //   this.form[key] = ''
-    //   // }
-    // }
     // console.log(this.Edit_name)
     // console.log(this.$route)// 可以得到当前路由的name
-    this.assignEssay()
     // console.log('this is current quill instance object', this.editor)
   },
   methods: {
     // 发布文章
     releaseEssay (draft) {
-      this.$axios({
-        method: 'POST',
-        url: `/articles`,
-        data: this.form,
-        params: {
-          draft
-        }
-      }).then(res => {
-        console.log(res)
-        this.$message({
-          message: '恭喜你，发布成功',
-          type: 'success'
-        })
-        this.$router.push({ name: 'article' })
-      }).catch(err => {
-        console.log(err)
-        this.$message({
-          message: '发布失败',
-          type: 'error'
-        })
-      })
+      if (this.Edit_id) {
+        this.EditEssay(draft)
+      } else {
+        this.publishEssay(draft)
+      }
     },
     //  接受子组件传的值
     takeIn (id) {
@@ -148,6 +128,53 @@ export default {
           this.Editloading = false
         })
       }
+    },
+    // 编辑文章
+    EditEssay (draft) {
+      this.$axios({
+        method: 'PUT',
+        url: `/articles/${this.Edit_id}`,
+        data: this.form,
+        params: {
+          draft
+        }
+      }).then(data => {
+        this.$message({
+          message: '修改成功',
+          type: 'success'
+        })
+        this.$router.push({ name: 'article' })
+      }).catch(err => {
+        console.log(err)
+        this.$message({
+          message: '修改失败',
+          type: 'error'
+        })
+      })
+    },
+    // 发布文章
+    publishEssay (draft) {
+      this.$axios({
+        method: 'POST',
+        url: `/articles`,
+        data: this.form,
+        params: {
+          draft
+        }
+      }).then(res => {
+        console.log(res)
+        this.$message({
+          message: '恭喜你，发布成功',
+          type: 'success'
+        })
+        this.$router.push({ name: 'article' })
+      }).catch(err => {
+        console.log(err)
+        this.$message({
+          message: '发布失败',
+          type: 'error'
+        })
+      })
     }
   }
 }
