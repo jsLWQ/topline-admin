@@ -22,6 +22,7 @@
 </template>
 <script>
 export default {
+  name: 'Appheader',
   data () {
     return {
       userInfo: ''
@@ -29,7 +30,19 @@ export default {
   },
   created () {
     this.userInfo = JSON.parse(window.localStorage.getItem('user-info'))
+    window.addEventListener('storage', function (e) {
+    // 变化时触发事件
+      console.log(e)
+    }, false)
+  },
+  updated () {
+    this.userInfo = JSON.parse(window.localStorage.getItem('user-info'))
     // console.log(this.userInfo)
+  },
+  computed: {
+    userInfo2 () {
+      return JSON.parse(window.localStorage.getItem('user-info'))
+    }
   },
   methods: {
     //  退出登录
