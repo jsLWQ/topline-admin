@@ -7,6 +7,7 @@ import './styles/index.less'
 import 'nprogress/nprogress.css'
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+import store from './store/index.js'
 Vue.prototype.$axios = axios
 
 Vue.use(ElementUI)
@@ -65,5 +66,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
