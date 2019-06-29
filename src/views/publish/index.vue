@@ -68,7 +68,8 @@ export default {
       content: '',
       editorOption: {
       },
-      Editloading: false
+      Editloading: false,
+      formDirty: false
     }
   },
   computed: {
@@ -84,24 +85,13 @@ export default {
     }
   },
   created () {
-    console.log(this.$route)
+    // console.log(this.$route)
     if (this.$route.name === 'publishEdit') {
       this.assignEssay()
-    } else if (this.$route.name === 'publish') {
-      console.log(1)
-      // this.form.title = ''
-      // for(let key in this.form) {
-      //   console.log(this.form[key])
-      //   // if(this.form[key] !=='cover') {
-      //   //   this.form[key] = ''
-      //   // }
-      // }
     }
-  },
-  mounted () {
-    // console.log(this.Edit_name)
-    // console.log(this.$route)// 可以得到当前路由的name
-    // console.log('this is current quill instance object', this.editor)
+    if (this.$route.name === 'publish') {
+      this.EssayChange()
+    }
   },
   methods: {
     // 发布文章
@@ -130,6 +120,9 @@ export default {
         })
         this.Editloading = false
         this.form = data
+        this.$nextTick(() => {
+          this.EssayChange()
+        })
       }).catch(err => {
         console.log(err)
         this.$message({
@@ -185,6 +178,45 @@ export default {
           type: 'error'
         })
       })
+    },
+    EssayChange () {
+      const unWatch = this.$watch('form', function () {
+        console.log(1)
+        this.formDirty = true
+        unWatch()
+      }, {
+        deep: true
+      })
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    console.log(to, from)
+    if (to.name === 'publish' && from.name === 'publishEdit') {
+      console.log(1)
+      this.form = {
+        title: '', // 文章状态
+        content: '', //  文章内容
+        channel_id: '', // 文章频道
+        cover: { //  封面
+          type: 0,
+          images: []
+        }
+      }
+      this.formDirty = false
+      next()
+    }
+    if (this.formDirty) {
+      this.$confirm('页面有未保存数据，真的要离开吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
+      next()
     }
   }
 }
