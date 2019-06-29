@@ -166,6 +166,7 @@ export default {
           type: 'success'
         })
         // console.log(res)
+        this.$store.state.user = data
         this.$router.push({ name: 'home' })
         this.loading = false
       }).catch(err => {
